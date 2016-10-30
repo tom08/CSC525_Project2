@@ -39,6 +39,11 @@ public:
 	float blue();
 	void setWindowId(int id);
 	int getWindowId();
+	int getTextX();
+	int getTextY();
+	bool hasText();
+	void resetTextPos();
+	void textNextLine();
 	void addChar(char key);
 	void removeLastChar();
     std::vector<char> getText();
@@ -47,10 +52,12 @@ private:
 	int id;
 	int width;
 	int height;
+	int textX, textY;
 	int leftWorldX;
 	int rightWorldX;
 	int topWorldY;
 	int lowerWorldY;
+    const int line_height = 25;
 	float color[3];
 	void* font;
 	std::vector<char> displayedText;
@@ -64,6 +71,9 @@ Window::Window(int width, int height) {
 	this->rightWorldX = (width / 2);
 	this->topWorldY = (height / 2);
 	this->lowerWorldY = (height / 2) * -1;
+	this->textX = this->leftWorldX + 10;
+	this->textY = this->topWorldY - 15;
+	this->font = GLUT_BITMAP_8_BY_13;
 }
 
 void Window::setUp(const char title[], int startX, int startY) {
@@ -85,22 +95,36 @@ void Window::setColor(float red, float green, float blue){
 float Window::red(){ return this->color[0]; }
 float Window::green(){ return this->color[1]; }
 float Window::blue(){ return this->color[2]; }
-int Window::getWindowId(){return this->id;}
-void Window::setWindowId(int id) {this->id = id;}
-std::vector<char> Window::getText() {return displayedText;}
-void Window::addChar(char key) {displayedText.push_back(key);}
-void Window::removeLastChar() {displayedText.pop_back();}
+int Window::getWindowId(){ return this->id;}
+int Window::getTextX(){ return this->textX; }
+int Window::getTextY(){ return this->textY; }
+void Window::resetTextPos(){
+    this->textX = this->leftWorldX + 10;
+    this->textY = this->topWorldY - 15;
+}
+void Window::textNextLine(){
+    this->textX = this->leftWorldX + 10;
+    this->textY = this->textY - this->line_height;
+}
+bool Window::hasText(){ return !this->displayedText.empty(); }
+void Window::setWindowId(int id) { this->id = id; }
+std::vector<char> Window::getText() { return displayedText; }
+void Window::addChar(char key) { displayedText.push_back(key); }
+void Window::removeLastChar() { displayedText.pop_back(); }
 
 
 //***********************************************************************************
 //GLOBALS
 // Window dimentions
-const int editWindowX = 900;
-const int editWindowY = 676;
+const int editWindowX = 680;
+const int editWindowY = 800;
 const int infoWindowX = 500;
 const int infoWindowY = 400;
 Window editorWindow(editWindowX, editWindowY);
 Window infoWindow(infoWindowX, infoWindowY);
+
+const unsigned int ENTER = 13;
+const unsigned int BACKSPACE = 8;
 
 //For Menus
 const int COLOR = 1;
@@ -121,7 +145,25 @@ const int BITMAP = 10;
 
 void display_text(){
     glColor3f(editorWindow.red(), editorWindow.green(), editorWindow.blue());
-    glRasterPos2i(-440, 300);
+    glRasterPos2i(editorWindow.getTextX(), editorWindow.getTextY());
+    std::vector<char> text = editorWindow.getText();
+    int chars = 0;
+    for(int i = 0; i < text.size(); i++){
+        if (text.at(i) == ENTER){
+            chars = 0;
+            editorWindow.textNextLine();
+            glRasterPos2i(editorWindow.getTextX(), editorWindow.getTextY());
+            continue;
+        }
+        if (chars == 60){
+            chars = 0;
+            editorWindow.textNextLine();
+            glRasterPos2i(editorWindow.getTextX(), editorWindow.getTextY());
+        }
+        glutBitmapCharacter(editorWindow.getFont(), text.at(i));
+        chars++;
+    }
+    editorWindow.resetTextPos();
 }
 
 
@@ -129,6 +171,8 @@ void display_text(){
 void editorDisplayCallback()
 {
     glClear(GL_COLOR_BUFFER_BIT);	// draw the background
+    if (editorWindow.hasText())
+        display_text();
     glFlush(); // flush out the buffer contents
 }
 
@@ -197,6 +241,14 @@ void infoMenuCallback(int entryId) {
 	}
 }
 
+void handleKey(unsigned char key, int mouseX, int mouseY){
+    if (key == BACKSPACE && editorWindow.hasText())
+        editorWindow.removeLastChar();
+    else if (key != BACKSPACE)
+        editorWindow.addChar(key);
+    editorDisplayCallback();
+}
+
 #ifdef _WIN32
 #else
 #endif
@@ -216,6 +268,7 @@ int main()
 	editorWindow.setUp("Editor Window", 100, 100);
     glutDisplayFunc(editorDisplayCallback);		// register a callback
 	createEditorMenus();
+	glutKeyboardFunc(handleKey);
 	infoWindow.setUp("Info Window", 1000, 100);
 	glutDisplayFunc(infoDisplayCallback);
 	glutCreateMenu(infoMenuCallback);
