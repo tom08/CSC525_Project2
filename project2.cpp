@@ -1,26 +1,27 @@
 /*==================================================================================================
  PROGRAMMER:			Thomas Kroll, Nathan Kroll
+ TRACE:                 kroll001, Kroll1483
  COURSE:				CSC 525/625
  MODIFIED BY:			Thomas Kroll:kroll001, Nathan Kroll:Kroll1483
- LAST MODIFIED DATE:	10/10/2016
- DESCRIPTION:			This program displays multiple objects on a 900x676 window.  The first thing
-                        displayed is a pixel map, which is used as the background of this scene.
-                        The pixel map is read from the file "pixel_map.txt" to be displayed.
-                        Next the program displays a green Bitmap of tiny bushes (or broccoli)
-                        randomly across the bottom of the screen.
-                        Next is the (slightly creepy) stick figures, which are
-                        composed of line segments, circles and partial circles.  The figures'
-                        shields are made of a pattern filled polygon rendered on top of a solid
-                        polygon. Lastly, the text "The Battle of Broccoli Fields" is written across
-                        the top of the window.
+ LAST MODIFIED DATE:	10/30/2016
+ DESCRIPTION:			
+ TASKS COMPLETED BY:    Thomas Kroll, kroll001:
+                        
+                        Nathan Kroll, Kroll1483:
+
  NOTE:					N/A
- FILES:					project1.cpp, pixel_map.txt (projProject.sln, ...)
+ FILES:					project2.cpp, (projProject.sln, ...)
  IDE/COMPILER:			MicroSoft Visual Studio 2013
  INSTRUCTION FOR COMPILATION AND EXECUTION:
-	1.		Double click on myCPPproj.sln	to OPEN the project
-	2.		Press Ctrl+F7					to COMPILE
-	3.		Press Ctrl+Shift+B				to BUILD (COMPILE+LINK)
-	4.		Press Ctrl+F5					to EXECUTE
+    MICROSOFT VISUAL STUDIO:
+        1.		Double click on myCPPproj.sln	to OPEN the project
+        2.		Press Ctrl+F7					to COMPILE
+        3.		Press Ctrl+Shift+B				to BUILD (COMPILE+LINK)
+        4.		Press Ctrl+F5					to EXECUTE
+    LINUX/G++ COMMAND LINE:
+        1.      Open a terminal in the project directory
+        2.      Execute command to COMPILE: g++ -std=c++11 project2.cpp -o PROJECT -lGL -lGLU -lglut
+        3.      Execute command to EXECUTE: ./PROJECT
 ==================================================================================================*/
 #include <string>
 #include <iostream>
@@ -69,6 +70,7 @@ public:
 	bool hasText();
 	void resetTextPos();
 	void textNextLine();
+	void setTextStart(int x, int y);
 	void addChar(char key);
 	void removeLastChar();
     std::vector<char> getText();
@@ -78,7 +80,7 @@ private:
 	int id;
 	int width;
 	int height;
-	int textX, textY;
+	int textX, textY, defaultX, defaultY;
 	int leftWorldX;
 	int rightWorldX;
 	int topWorldY;
@@ -100,6 +102,8 @@ Window::Window(int width, int height) {
 	this->lowerWorldY = (height / 2) * -1;
 	this->textX = this->leftWorldX + 10;
 	this->textY = this->topWorldY - this->line_height;
+	this->defaultX = this->textX;
+	this->defaultY = this->textY;
 	this->font = GLUT_BITMAP_8_BY_13;
 }
 
@@ -158,12 +162,17 @@ int Window::getTextX(){ return this->textX; }
 int Window::getTextY(){ return this->textY; }
 int Window::getLineWidth() { return this->line_width; }
 void Window::resetTextPos(){
-    this->textX = this->leftWorldX + 10;
-	this->textY = this->topWorldY - this->line_height;
+    this->textX = this->defaultX;
+	this->textY = this->defaultY;
 }
 void Window::textNextLine(){
-    this->textX = this->leftWorldX + 10;
+    this->textX = this->defaultX;
     this->textY = this->textY - this->line_height;
+}
+void Window::setTextStart(int x, int y){
+    this->defaultX = x - this->rightWorldX;
+    this->defaultY = this->topWorldY - y;
+    this->resetTextPos();
 }
 bool Window::hasText(){ return !this->displayedText.empty(); }
 void Window::setWindowId(int id) { this->id = id; }
@@ -295,6 +304,12 @@ void handleKey(unsigned char key, int mouseX, int mouseY){
     editorDisplayCallback();
 }
 
+void setTextPos(int button, int state, int cursX, int cursY){
+    if (button == GLUT_LEFT_BUTTON && !editorWindow.hasText()){
+        editorWindow.setTextStart(cursX, cursY);
+    }
+}
+
 #ifdef _WIN32
 #else
 #endif
@@ -319,6 +334,7 @@ int main()
     glutDisplayFunc(editorDisplayCallback);		// register a callback
 	createEditorMenus();
 	glutKeyboardFunc(handleKey);
+	glutMouseFunc(setTextPos);
 	
 
 
