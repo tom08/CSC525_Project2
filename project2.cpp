@@ -34,14 +34,15 @@ public:
 	void setFont(void* newFont);
 	void* getFont();
 	void setColor(float red, float green, float blue);
-	float getRed();
-	float getGreen();
-	float getBlue();
+	float red();
+	float green();
+	float blue();
 	void setWindowId(int id);
 	int getWindowId();
 
 	void addChar(char key);
 	void removeLastChar();
+    std::vector<char> getText();
 
 	void setUp(const char title[]);
 
