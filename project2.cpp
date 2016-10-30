@@ -5,6 +5,10 @@
  MODIFIED BY:			Thomas Kroll:kroll001, Nathan Kroll:Kroll1483
  LAST MODIFIED DATE:	10/30/2016
  DESCRIPTION:			
+ TASKS COMPLETED BY:    Thomas Kroll, kroll001:
+                        
+                        Nathan Kroll, Kroll1483:
+
  NOTE:					N/A
  FILES:					project2.cpp, (projProject.sln, ...)
  IDE/COMPILER:			MicroSoft Visual Studio 2013
