@@ -42,7 +42,7 @@ public:
 	void addChar(char key);
 	void removeLastChar();
     std::vector<char> getText();
-	void setUp(const char title[]);
+	void setUp(const char title[], int startX, int startY);
 private:
 	int id;
 	int width;
@@ -66,12 +66,13 @@ Window::Window(int width, int height) {
 	this->lowerWorldY = (height / 2) * -1;
 }
 
-void Window::setUp(const char title[]) {
+void Window::setUp(const char title[], int startX, int startY) {
 	glutInitWindowSize(width, height);				// specify a window size
-	glutInitWindowPosition(leftWorldX, topWorldY);			// specify a window position
+	glutInitWindowPosition(startX, startY);  // specify a window position
 	glutCreateWindow(title);
 	glClearColor(1, 1, 1, 0);			// specify a background color: white 
 	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
+	glRasterPos2i(leftWorldX, rightWorldX);
 }
 
 void Window::setFont(void* newFont){this->font = newFont;}
@@ -94,9 +95,12 @@ void Window::removeLastChar() {displayedText.pop_back();}
 //***********************************************************************************
 //GLOBALS
 // Window dimentions
-const int windowX = 900;
-const int windowY = 676;
-Window editorWindow(windowX, windowY); 
+const int editWindowX = 900;
+const int editWindowY = 676;
+const int infoWindowX = 500;
+const int infoWindowY = 400;
+Window editorWindow(editWindowX, editWindowY);
+Window infoWindow(infoWindowX, infoWindowY);
 //***********************************************************************************
 
 
@@ -111,18 +115,23 @@ void display_text(){
 
 
 //***********************************************************************************
-void myInit()
-{glClearColor(1, 1, 1, 0);			// specify a background clor: white 
- int x = windowX / 2;
- int y = windowY / 2;
- gluOrtho2D(-x, x, -y, y);  // specify a viewing area
-}
-
-//***********************************************************************************
-void myDisplayCallback()
+void editorDisplayCallback()
 {
     glClear(GL_COLOR_BUFFER_BIT);	// draw the background
     glFlush(); // flush out the buffer contents
+}
+
+void infoDisplayCallback()
+{
+	glClear(GL_COLOR_BUFFER_BIT);	// draw the background
+	glFlush(); // flush out the buffer contents
+}
+
+void infoMenuCallback(int entryId) {
+	switch (entryId) {
+	case 1:
+		glutIconifyWindow();
+	}
 }
 
 #ifdef _WIN32
@@ -141,8 +150,13 @@ int main()
     glutInit(&argc, argv);
     //====================================================================//
 
-	editorWindow.setUp("Editor Window");
-    glutDisplayFunc(myDisplayCallback);		// register a callback
+	editorWindow.setUp("Editor Window", 100, 100);
+    glutDisplayFunc(editorDisplayCallback);		// register a callback
+	infoWindow.setUp("Info Window", 1000, 100);
+	glutDisplayFunc(infoDisplayCallback);
+	glutCreateMenu(infoMenuCallback);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	glutAddMenuEntry("Minimize", 1);
 
 
     glutMainLoop();							// get into an infinite loop
