@@ -169,9 +169,9 @@ void myDisplayCallback()
 }
 
 void handleKey(unsigned char key, int mouseX, int mouseY){
-    if (key == BACKSPACE)
+    if (key == BACKSPACE && editorWindow.hasText())
         editorWindow.removeLastChar();
-    else
+    else if (key != BACKSPACE)
         editorWindow.addChar(key);
     myDisplayCallback();
 }
