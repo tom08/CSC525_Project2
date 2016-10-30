@@ -32,6 +32,26 @@
 #else
 #endif
 
+//***********************************************************************************
+//GLOBALS
+
+const unsigned int ENTER = 13;
+const unsigned int BACKSPACE = 8;
+
+//For Menus
+const int SAVE = 0;
+const int COLOR = 1;
+const int FONT = 2;
+const int MINIMIZE = 3;
+const int EXIT = 4;
+const int RED = 5;
+const int GREEN = 6;
+const int BLUE = 7;
+const int TIMES_NEW_ROMAN = 8;
+const int HELVETICA = 9;
+const int BITMAP = 10;
+//***********************************************************************************
+
 class Window {
 public:
 	Window(int width, int height);
@@ -108,7 +128,7 @@ void Window::save() {
 				fout << '\n';
 			}
 			else {
-				if (displayedText.at(i) == '\n')
+				if (displayedText.at(i) == ENTER)
 					chars = 0;
 				else {
 					chars++;
@@ -151,9 +171,6 @@ std::vector<char> Window::getText() { return displayedText; }
 void Window::addChar(char key) { displayedText.push_back(key); }
 void Window::removeLastChar() { displayedText.pop_back(); }
 
-
-//***********************************************************************************
-//GLOBALS
 // Window dimentions
 const int editWindowX = 680;
 const int editWindowY = 800;
@@ -161,23 +178,6 @@ const int infoWindowX = 500;
 const int infoWindowY = 400;
 Window editorWindow(editWindowX, editWindowY);
 Window infoWindow(infoWindowX, infoWindowY);
-
-const unsigned int ENTER = 13;
-const unsigned int BACKSPACE = 8;
-
-//For Menus
-const int SAVE = 0;
-const int COLOR = 1;
-const int FONT = 2;
-const int MINIMIZE = 3;
-const int EXIT = 4;
-const int RED = 5;
-const int GREEN = 6;
-const int BLUE = 7;
-const int TIMES_NEW_ROMAN = 8;
-const int HELVETICA = 9;
-const int BITMAP = 10;
-//***********************************************************************************
 
 //***********************************************************************************
 //Global Function Definitions
