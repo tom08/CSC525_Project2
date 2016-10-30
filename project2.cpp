@@ -72,7 +72,7 @@ Window::Window(int width, int height) {
 	this->topWorldY = (height / 2);
 	this->lowerWorldY = (height / 2) * -1;
 	this->textX = this->leftWorldX + 10;
-	this->textY = this->topWorldY - 15;
+	this->textY = this->topWorldY - this->line_height;
 	this->font = GLUT_BITMAP_8_BY_13;
 }
 
@@ -100,7 +100,7 @@ int Window::getTextX(){ return this->textX; }
 int Window::getTextY(){ return this->textY; }
 void Window::resetTextPos(){
     this->textX = this->leftWorldX + 10;
-    this->textY = this->topWorldY - 15;
+	this->textY = this->topWorldY - this->line_height;
 }
 void Window::textNextLine(){
     this->textX = this->leftWorldX + 10;
@@ -266,16 +266,16 @@ int main()
     char *argv[1] = {(char*)"Something"};
     glutInit(&argc, argv);
     //====================================================================//
-
-	editorWindow.setUp("Editor Window", 100, 100);
-    glutDisplayFunc(editorDisplayCallback);		// register a callback
-	createEditorMenus();
-	glutKeyboardFunc(handleKey);
 	infoWindow.setUp("Info Window", 1000, 100);
 	glutDisplayFunc(infoDisplayCallback);
 	glutCreateMenu(infoMenuCallback);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutAddMenuEntry("Minimize", MINIMIZE);
+	editorWindow.setUp("Editor Window", 100, 100);
+    glutDisplayFunc(editorDisplayCallback);		// register a callback
+	createEditorMenus();
+	glutKeyboardFunc(handleKey);
+	
 
 
     glutMainLoop();							// get into an infinite loop
