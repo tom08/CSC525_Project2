@@ -30,7 +30,7 @@
 
 class Window {
 public:
-	Window(int width, int height, const char title[]);
+	Window(int width, int height);
 	void setFont(void* newFont);
 	void* getFont();
 	void setColor(float red, float green, float blue);
@@ -41,7 +41,10 @@ public:
 	void setWindowId(int id);
 	int getWindowId();
 
-	void drawText(int x, int y, std::string text);
+	void addChar(char key);
+	void removeLastChar();
+
+	void setUp(const char title[]);
 
 private:
 	int id;
@@ -56,7 +59,8 @@ private:
 	std::vector<char> displayedText;
 };
 
-Window::Window(int width, int height, const char title[]) {
+//Window(width of window, height of window)
+Window::Window(int width, int height) {
 	this->width = width;
 	this->height = height;
 	this->leftWorldX = (width / 2) * -1;
@@ -65,8 +69,20 @@ Window::Window(int width, int height, const char title[]) {
 	this->lowerWorldY = (height / 2) * -1;
 }
 
+void Window::setUp(const char title[]) {
+	glutInitWindowSize(width, height);				// specify a window size
+	glutInitWindowPosition(leftWorldX, topWorldY);			// specify a window position
+	glutCreateWindow(title);
+	glClearColor(1, 1, 1, 0);			// specify a background color: white 
+	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
+}
+
 void Window::setFont(void* newFont){
     this->font = newFont;
+}
+
+void* Window::getFont() {
+	return font;
 }
 
 void Window::setColor(float red, float green, float blue){
@@ -75,11 +91,39 @@ void Window::setColor(float red, float green, float blue){
     this->color[2] = blue;
 }
 
+float Window::getRed() {
+	return this->color[0];
+}
+
+float Window::getGreen() {
+	return this->color[1];
+}
+
+float Window::getBlue() {
+	return this->color[2];
+}
+
 int Window::getWindowId(){
     return this->id;
 }
 
-Window editorWindow(400, 400, "Editor Window"); 
+void Window::setWindowId(int id) {
+	this->id = id;
+}
+
+std::vector<char> Window::getText() {
+	return displayedText;
+}
+
+void Window::addChar(char key) {
+	displayedText.push_back(key);
+}
+
+void Window::removeLastChar() {
+	displayedText.pop_back();
+}
+
+Window editorWindow(400, 400); 
 
 //***********************************************************************************
 // Window dimentions
@@ -116,9 +160,7 @@ int main()
     int argc = 1;
     char *argv[1] = {(char*)"Something"};
     glutInit(&argc, argv);
-    //====================================================================//
-
-	TextEditorWindow editorWindow(400, 400, "Text Editor Window", myDisplayCallback);									// setting up
+    //====================================================================//								// setting up
 
 
     glutDisplayFunc(myDisplayCallback);		// register a callback
