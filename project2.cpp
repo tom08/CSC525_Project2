@@ -22,17 +22,18 @@
 	3.		Press Ctrl+Shift+B				to BUILD (COMPILE+LINK)
 	4.		Press Ctrl+F5					to EXECUTE
 ==================================================================================================*/
-#include <cmath>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <time.h>
 #include <GL/glut.h>				// include GLUT library
 
 class TextEditorWindow {
 public:
 	TextEditorWindow(int width, int height, const char title[]);
+	void setFont(int newFont);
+	void setColor(float red, float green, float blue);
+	int getWindowId();
 
 	void drawText(int x, int y, std::string text);
 
@@ -41,8 +42,7 @@ private:
 	void setUpMenus();
 	void setUpMouseEvents();
 	void setUpKeyboardEvents();
-	void setFont(int newFont);
-	void setColor(float red, float green, float blue);
+	int id;
 	int width;
 	int height;
 	int leftWorldX;
@@ -67,9 +67,23 @@ TextEditorWindow::TextEditorWindow(int width, int height, const char title[]) {
 void TextEditorWindow::setUpWindow(const char title[]) {
 	glutInitWindowSize(width, height);				// specify a window size
 	glutInitWindowPosition(leftWorldX, topWorldY);			// specify a window position
-	glutCreateWindow(title);
+	this->id = glutCreateWindow(title);
 	glClearColor(1, 1, 1, 0);			// specify a background color: white 
 	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
+}
+
+void TextEditorWindow::setFont(int newFont){
+    this->font = newFont;
+}
+
+void TextEditorWindow::setColor(float red, float green, float blue){
+    this->color[0] = red;
+    this->color[1] = green;
+    this->color[2] = blue;
+}
+
+int TextEditorWindow::getWindowId(){
+    return this->id;
 }
 
 //***********************************************************************************
