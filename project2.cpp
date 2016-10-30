@@ -39,13 +39,10 @@ public:
 	float blue();
 	void setWindowId(int id);
 	int getWindowId();
-
 	void addChar(char key);
 	void removeLastChar();
     std::vector<char> getText();
-
 	void setUp(const char title[]);
-
 private:
 	int id;
 	int width;
@@ -77,43 +74,21 @@ void Window::setUp(const char title[]) {
 	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
 }
 
-void Window::setFont(void* newFont){
-    this->font = newFont;
-}
-
-void* Window::getFont() {
-	return font;
-}
-
+void Window::setFont(void* newFont){this->font = newFont;}
+void* Window::getFont() {return font;}
 void Window::setColor(float red, float green, float blue){
     this->color[0] = red;
     this->color[1] = green;
     this->color[2] = blue;
 }
-
 float Window::red(){ return this->color[0]; }
 float Window::green(){ return this->color[1]; }
 float Window::blue(){ return this->color[2]; }
-
-int Window::getWindowId(){
-    return this->id;
-}
-
-void Window::setWindowId(int id) {
-	this->id = id;
-}
-
-std::vector<char> Window::getText() {
-	return displayedText;
-}
-
-void Window::addChar(char key) {
-	displayedText.push_back(key);
-}
-
-void Window::removeLastChar() {
-	displayedText.pop_back();
-}
+int Window::getWindowId(){return this->id;}
+void Window::setWindowId(int id) {this->id = id;}
+std::vector<char> Window::getText() {return displayedText;}
+void Window::addChar(char key) {displayedText.push_back(key);}
+void Window::removeLastChar() {displayedText.pop_back();}
 
 
 //***********************************************************************************
@@ -121,7 +96,7 @@ void Window::removeLastChar() {
 // Window dimentions
 const int windowX = 900;
 const int windowY = 676;
-Window editorWindow(400, 400); 
+Window editorWindow(windowX, windowY); 
 //***********************************************************************************
 
 
@@ -166,7 +141,7 @@ int main()
     glutInit(&argc, argv);
     //====================================================================//
 
-
+	editorWindow.setUp("Editor Window");
     glutDisplayFunc(myDisplayCallback);		// register a callback
 
 
