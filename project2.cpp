@@ -30,6 +30,47 @@
 #include <time.h>
 #include <GL/glut.h>				// include GLUT library
 
+class TextEditorWindow {
+public:
+	TextEditorWindow(int width, int height, const char title[]);
+
+	void drawText(int x, int y, std::string text);
+
+private:
+	void setUpWindow(const char title[]);
+	void setUpMenus();
+	void setUpMouseEvents();
+	void setUpKeyboardEvents();
+	void setFont(int newFont);
+	void setColor(float red, float green, float blue);
+	int width;
+	int height;
+	int leftWorldX;
+	int rightWorldX;
+	int topWorldY;
+	int lowerWorldY;
+	float color[3];
+	int font;
+	std::vector<char> displayedText;
+};
+
+TextEditorWindow::TextEditorWindow(int width, int height, const char title[]) {
+	this->width = width;
+	this->height = height;
+	this->leftWorldX = (width / 2) * -1;
+	this->rightWorldX = (width / 2);
+	this->topWorldY = (height / 2);
+	this->lowerWorldY = (height / 2) * -1;
+	setUpWindow(title);
+}
+
+void TextEditorWindow::setUpWindow(const char title[]) {
+	glutInitWindowSize(width, height);				// specify a window size
+	glutInitWindowPosition(leftWorldX, topWorldY);			// specify a window position
+	glutCreateWindow(title);
+	glClearColor(1, 1, 1, 0);			// specify a background color: white 
+	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
+}
 
 //***********************************************************************************
 // Window dimentions
@@ -68,11 +109,7 @@ int main()
     glutInit(&argc, argv);
     //====================================================================//
 
-    glutInitWindowSize(windowX, windowY);				// specify a window size
-    glutInitWindowPosition(100, 0);			// specify a window position
-    glutCreateWindow("Project 1");			// create a titled window
-
-    myInit();									// setting up
+	TextEditorWindow editorWindow(400, 400, "Text Editor Window");									// setting up
 
 
     glutDisplayFunc(myDisplayCallback);		// register a callback
