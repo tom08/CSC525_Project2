@@ -44,6 +44,7 @@ public:
 	bool hasText();
 	void resetTextPos();
 	void textNextLine();
+	void setTextStart(int x, int y);
 	void addChar(char key);
 	void removeLastChar();
     std::vector<char> getText();
@@ -52,7 +53,7 @@ private:
 	int id;
 	int width;
 	int height;
-	int textX, textY;
+	int textX, textY, defaultX, defaultY;
 	int leftWorldX;
 	int rightWorldX;
 	int topWorldY;
@@ -73,6 +74,8 @@ Window::Window(int width, int height) {
 	this->lowerWorldY = (height / 2) * -1;
 	this->textX = this->leftWorldX + 10;
 	this->textY = this->topWorldY - this->line_height;
+	this->defaultX = this->textX;
+	this->defaultY = this->textY;
 	this->font = GLUT_BITMAP_8_BY_13;
 }
 
@@ -99,12 +102,17 @@ int Window::getWindowId(){ return this->id;}
 int Window::getTextX(){ return this->textX; }
 int Window::getTextY(){ return this->textY; }
 void Window::resetTextPos(){
-    this->textX = this->leftWorldX + 10;
-	this->textY = this->topWorldY - this->line_height;
+    this->textX = this->defaultX;
+	this->textY = this->defaultY;
 }
 void Window::textNextLine(){
     this->textX = this->leftWorldX + 10;
     this->textY = this->textY - this->line_height;
+}
+void Window::setTextStart(int x, int y){
+    this->defaultX = x - this->rightWorldX;
+    this->defaultY = this->topWorldY - y;
+    this->resetTextPos();
 }
 bool Window::hasText(){ return !this->displayedText.empty(); }
 void Window::setWindowId(int id) { this->id = id; }
@@ -251,6 +259,12 @@ void handleKey(unsigned char key, int mouseX, int mouseY){
     editorDisplayCallback();
 }
 
+void setTextPos(int button, int state, int cursX, int cursY){
+    if (button == GLUT_LEFT_BUTTON && !editorWindow.hasText()){
+        editorWindow.setTextStart(cursX, cursY);
+    }
+}
+
 #ifdef _WIN32
 #else
 #endif
@@ -275,6 +289,7 @@ int main()
     glutDisplayFunc(editorDisplayCallback);		// register a callback
 	createEditorMenus();
 	glutKeyboardFunc(handleKey);
+	glutMouseFunc(setTextPos);
 	
 
 
