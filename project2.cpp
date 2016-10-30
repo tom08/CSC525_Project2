@@ -196,6 +196,7 @@ void colorMenuCallback(int entryId) {
 	default:
 		editorWindow.setColor(0, 0, 0);
 	}
+	editorDisplayCallback();
 }
 
 void fontMenuCallback(int entryId) {
@@ -210,6 +211,7 @@ void fontMenuCallback(int entryId) {
 		editorWindow.setFont(GLUT_BITMAP_8_BY_13);
 		break;
 	}
+	editorDisplayCallback();
 }
 
 void createEditorMenus() {
