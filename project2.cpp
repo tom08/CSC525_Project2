@@ -107,7 +107,7 @@ void Window::resetTextPos(){
 	this->textY = this->defaultY;
 }
 void Window::textNextLine(){
-    this->textX = this->leftWorldX + 10;
+    this->textX = this->defaultX;
     this->textY = this->textY - this->line_height;
 }
 void Window::setTextStart(int x, int y){
