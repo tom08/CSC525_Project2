@@ -28,20 +28,22 @@
 #include <vector>
 #include <GL/glut.h>				// include GLUT library
 
-class TextEditorWindow {
+class Window {
 public:
-	TextEditorWindow(int width, int height, const char title[]);
-	void setFont(int newFont);
+	Window(int width, int height, const char title[]);
+	void setFont(void* newFont);
+	void* getFont();
 	void setColor(float red, float green, float blue);
+	float getRed();
+	float getGreen();
+	float getBlue();
+	std::vector<char> getText();
+	void setWindowId(int id);
 	int getWindowId();
 
 	void drawText(int x, int y, std::string text);
 
 private:
-	void setUpWindow(const char title[]);
-	void setUpMenus();
-	void setUpMouseEvents();
-	void setUpKeyboardEvents();
 	int id;
 	int width;
 	int height;
@@ -50,41 +52,34 @@ private:
 	int topWorldY;
 	int lowerWorldY;
 	float color[3];
-	int font;
+	void* font;
 	std::vector<char> displayedText;
 };
 
-TextEditorWindow::TextEditorWindow(int width, int height, const char title[]) {
+Window::Window(int width, int height, const char title[]) {
 	this->width = width;
 	this->height = height;
 	this->leftWorldX = (width / 2) * -1;
 	this->rightWorldX = (width / 2);
 	this->topWorldY = (height / 2);
 	this->lowerWorldY = (height / 2) * -1;
-	setUpWindow(title);
 }
 
-void TextEditorWindow::setUpWindow(const char title[]) {
-	glutInitWindowSize(width, height);				// specify a window size
-	glutInitWindowPosition(leftWorldX, topWorldY);			// specify a window position
-	this->id = glutCreateWindow(title);
-	glClearColor(1, 1, 1, 0);			// specify a background color: white 
-	gluOrtho2D(leftWorldX, rightWorldX, lowerWorldY, topWorldY);
-}
-
-void TextEditorWindow::setFont(int newFont){
+void Window::setFont(void* newFont){
     this->font = newFont;
 }
 
-void TextEditorWindow::setColor(float red, float green, float blue){
+void Window::setColor(float red, float green, float blue){
     this->color[0] = red;
     this->color[1] = green;
     this->color[2] = blue;
 }
 
-int TextEditorWindow::getWindowId(){
+int Window::getWindowId(){
     return this->id;
 }
+
+Window editorWindow(400, 400, "Editor Window"); 
 
 //***********************************************************************************
 // Window dimentions
@@ -123,7 +118,7 @@ int main()
     glutInit(&argc, argv);
     //====================================================================//
 
-	TextEditorWindow editorWindow(400, 400, "Text Editor Window");									// setting up
+	TextEditorWindow editorWindow(400, 400, "Text Editor Window", myDisplayCallback);									// setting up
 
 
     glutDisplayFunc(myDisplayCallback);		// register a callback
