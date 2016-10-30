@@ -29,6 +29,30 @@
 #include <vector>
 #include <GL/glut.h>				// include GLUT library
 
+#ifdef _WIN32
+#else
+#endif
+
+//***********************************************************************************
+//GLOBALS
+
+const unsigned int ENTER = 13;
+const unsigned int BACKSPACE = 8;
+
+//For Menus
+const int SAVE = 0;
+const int COLOR = 1;
+const int FONT = 2;
+const int MINIMIZE = 3;
+const int EXIT = 4;
+const int RED = 5;
+const int GREEN = 6;
+const int BLUE = 7;
+const int TIMES_NEW_ROMAN = 8;
+const int HELVETICA = 9;
+const int BITMAP = 10;
+//***********************************************************************************
+
 class Window {
 public:
 	Window(int width, int height);
@@ -42,6 +66,7 @@ public:
 	int getWindowId();
 	int getTextX();
 	int getTextY();
+	int getLineWidth();
 	bool hasText();
 	void resetTextPos();
 	void textNextLine();
@@ -50,6 +75,7 @@ public:
 	void removeLastChar();
     std::vector<char> getText();
 	void setUp(const char title[], int startX, int startY);
+	void save();
 private:
 	int id;
 	int width;
@@ -60,6 +86,7 @@ private:
 	int topWorldY;
 	int lowerWorldY;
     const int line_height = 25;
+	const int line_width = 60;
 	float color[3];
 	void* font;
 	std::vector<char> displayedText;
@@ -89,6 +116,37 @@ void Window::setUp(const char title[], int startX, int startY) {
 	glRasterPos2i(leftWorldX, rightWorldX);
 }
 
+void Window::save() {
+	std::ofstream fout;
+	std::string filename = "typed.txt";
+#ifdef _WIN32
+	filename = "C:\\TEMP\\typed.txt";
+#endif
+	fout.open(filename);
+	if (fout.is_open()) {
+		int chars = 0;
+		for (int i = 0; i < displayedText.size(); i++) {
+			if (chars == line_width) {
+				chars = 0;
+				i--;
+				fout << '\n';
+			}
+			else {
+				if (displayedText.at(i) == ENTER)
+					chars = 0;
+				else {
+					chars++;
+				}
+				fout << displayedText.at(i);
+			}
+		}
+		fout.close();
+	}
+	else {
+		std::cout << "Failed to open C:\\TEMP\\typed.txt" << std::endl;
+	}
+}
+
 void Window::setFont(void* newFont){this->font = newFont;}
 void* Window::getFont() {return font;}
 void Window::setColor(float red, float green, float blue){
@@ -102,6 +160,7 @@ float Window::blue(){ return this->color[2]; }
 int Window::getWindowId(){ return this->id;}
 int Window::getTextX(){ return this->textX; }
 int Window::getTextY(){ return this->textY; }
+int Window::getLineWidth() { return this->line_width; }
 void Window::resetTextPos(){
     this->textX = this->defaultX;
 	this->textY = this->defaultY;
@@ -121,9 +180,6 @@ std::vector<char> Window::getText() { return displayedText; }
 void Window::addChar(char key) { displayedText.push_back(key); }
 void Window::removeLastChar() { displayedText.pop_back(); }
 
-
-//***********************************************************************************
-//GLOBALS
 // Window dimentions
 const int editWindowX = 680;
 const int editWindowY = 800;
@@ -131,22 +187,6 @@ const int infoWindowX = 500;
 const int infoWindowY = 400;
 Window editorWindow(editWindowX, editWindowY);
 Window infoWindow(infoWindowX, infoWindowY);
-
-const unsigned int ENTER = 13;
-const unsigned int BACKSPACE = 8;
-
-//For Menus
-const int COLOR = 1;
-const int FONT = 2;
-const int MINIMIZE = 3;
-const int EXIT = 4;
-const int RED = 5;
-const int GREEN = 6;
-const int BLUE = 7;
-const int TIMES_NEW_ROMAN = 8;
-const int HELVETICA = 9;
-const int BITMAP = 10;
-//***********************************************************************************
 
 //***********************************************************************************
 //Global Function Definitions
@@ -164,7 +204,7 @@ void display_text(){
             glRasterPos2i(editorWindow.getTextX(), editorWindow.getTextY());
             continue;
         }
-        if (chars == 60){
+        if (chars == editorWindow.getLineWidth()){
             chars = 0;
             editorWindow.textNextLine();
             glRasterPos2i(editorWindow.getTextX(), editorWindow.getTextY());
@@ -187,6 +227,9 @@ void editorDisplayCallback()
 
 void editorMenuCallback(int entryId) {
 	switch (entryId) {
+	case SAVE:
+		editorWindow.save();
+		break;
 	case EXIT:
 		exit(0);
 	}
@@ -236,6 +279,7 @@ void createEditorMenus() {
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutAddSubMenu("Colors", colorMenuId);
 	glutAddSubMenu("Fonts", fontMenuId);
+	glutAddMenuEntry("Save Display Text", SAVE);
 	glutAddMenuEntry("Exit", EXIT);
 }
 
