@@ -37,7 +37,6 @@ public:
 	float getRed();
 	float getGreen();
 	float getBlue();
-	std::vector<char> getText();
 	void setWindowId(int id);
 	int getWindowId();
 
@@ -91,17 +90,9 @@ void Window::setColor(float red, float green, float blue){
     this->color[2] = blue;
 }
 
-float Window::getRed() {
-	return this->color[0];
-}
-
-float Window::getGreen() {
-	return this->color[1];
-}
-
-float Window::getBlue() {
-	return this->color[2];
-}
+float Window::red(){ return this->color[0]; }
+float Window::green(){ return this->color[1]; }
+float Window::blue(){ return this->color[2]; }
 
 int Window::getWindowId(){
     return this->id;
@@ -123,12 +114,24 @@ void Window::removeLastChar() {
 	displayedText.pop_back();
 }
 
-Window editorWindow(400, 400); 
 
 //***********************************************************************************
+//GLOBALS
 // Window dimentions
 const int windowX = 900;
 const int windowY = 676;
+Window editorWindow(400, 400); 
+//***********************************************************************************
+
+
+//***********************************************************************************
+//Global Function Definitions
+//***********************************************************************************
+
+void display_text(){
+    glColor3f(editorWindow.red(), editorWindow.green(), editorWindow.blue());
+    glRasterPos2i(-440, 300);
+}
 
 
 //***********************************************************************************
@@ -160,7 +163,7 @@ int main()
     int argc = 1;
     char *argv[1] = {(char*)"Something"};
     glutInit(&argc, argv);
-    //====================================================================//								// setting up
+    //====================================================================//
 
 
     glutDisplayFunc(myDisplayCallback);		// register a callback
