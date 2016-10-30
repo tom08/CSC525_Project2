@@ -1,26 +1,23 @@
 /*==================================================================================================
  PROGRAMMER:			Thomas Kroll, Nathan Kroll
+ TRACE:                 kroll001, Kroll1483
  COURSE:				CSC 525/625
  MODIFIED BY:			Thomas Kroll:kroll001, Nathan Kroll:Kroll1483
- LAST MODIFIED DATE:	10/10/2016
- DESCRIPTION:			This program displays multiple objects on a 900x676 window.  The first thing
-                        displayed is a pixel map, which is used as the background of this scene.
-                        The pixel map is read from the file "pixel_map.txt" to be displayed.
-                        Next the program displays a green Bitmap of tiny bushes (or broccoli)
-                        randomly across the bottom of the screen.
-                        Next is the (slightly creepy) stick figures, which are
-                        composed of line segments, circles and partial circles.  The figures'
-                        shields are made of a pattern filled polygon rendered on top of a solid
-                        polygon. Lastly, the text "The Battle of Broccoli Fields" is written across
-                        the top of the window.
+ LAST MODIFIED DATE:	10/30/2016
+ DESCRIPTION:			
  NOTE:					N/A
- FILES:					project1.cpp, pixel_map.txt (projProject.sln, ...)
+ FILES:					project2.cpp, (projProject.sln, ...)
  IDE/COMPILER:			MicroSoft Visual Studio 2013
  INSTRUCTION FOR COMPILATION AND EXECUTION:
-	1.		Double click on myCPPproj.sln	to OPEN the project
-	2.		Press Ctrl+F7					to COMPILE
-	3.		Press Ctrl+Shift+B				to BUILD (COMPILE+LINK)
-	4.		Press Ctrl+F5					to EXECUTE
+    MICROSOFT VISUAL STUDIO:
+        1.		Double click on myCPPproj.sln	to OPEN the project
+        2.		Press Ctrl+F7					to COMPILE
+        3.		Press Ctrl+Shift+B				to BUILD (COMPILE+LINK)
+        4.		Press Ctrl+F5					to EXECUTE
+    LINUX/G++ COMMAND LINE:
+        1.      Open a terminal in the project directory
+        2.      Execute command to COMPILE: g++ -std=c++11 project2.cpp -o PROJECT -lGL -lGLU -lglut
+        3.      Execute command to EXECUTE: ./PROJECT
 ==================================================================================================*/
 #include <string>
 #include <iostream>
