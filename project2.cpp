@@ -101,8 +101,19 @@ const int infoWindowX = 500;
 const int infoWindowY = 400;
 Window editorWindow(editWindowX, editWindowY);
 Window infoWindow(infoWindowX, infoWindowY);
-//***********************************************************************************
 
+//For Menus
+const int COLOR = 1;
+const int FONT = 2;
+const int MINIMIZE = 3;
+const int EXIT = 4;
+const int RED = 5;
+const int GREEN = 6;
+const int BLUE = 7;
+const int TIMES_NEW_ROMAN = 8;
+const int HELVETICA = 9;
+const int BITMAP = 10;
+//***********************************************************************************
 
 //***********************************************************************************
 //Global Function Definitions
@@ -121,6 +132,58 @@ void editorDisplayCallback()
     glFlush(); // flush out the buffer contents
 }
 
+void editorMenuCallback(int entryId) {
+	switch (entryId) {
+	case EXIT:
+		exit(0);
+	}
+}
+void colorMenuCallback(int entryId) {
+	switch (entryId) {
+	case RED:
+		editorWindow.setColor(1, 0, 0);
+		break;
+	case GREEN:
+		editorWindow.setColor(0, 1, 0);
+		break;
+	case BLUE:
+		editorWindow.setColor(0, 0, 1);
+		break;
+	default:
+		editorWindow.setColor(0, 0, 0);
+	}
+}
+
+void fontMenuCallback(int entryId) {
+	switch (entryId) {
+	case TIMES_NEW_ROMAN:
+		editorWindow.setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+		break;
+	case HELVETICA:
+		editorWindow.setFont(GLUT_BITMAP_HELVETICA_18);
+		break;
+	case BITMAP:
+		editorWindow.setFont(GLUT_BITMAP_8_BY_13);
+		break;
+	}
+}
+
+void createEditorMenus() {
+	int colorMenuId = glutCreateMenu(colorMenuCallback);
+	glutAddMenuEntry("Red", RED);
+	glutAddMenuEntry("Green", GREEN);
+	glutAddMenuEntry("Blue", BLUE);
+	int fontMenuId = glutCreateMenu(fontMenuCallback);
+	glutAddMenuEntry("Times New Roman", TIMES_NEW_ROMAN);
+	glutAddMenuEntry("HELVETICA", HELVETICA);
+	glutAddMenuEntry("Bitmap 8 by 13", BITMAP);
+	glutCreateMenu(editorMenuCallback);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	glutAddSubMenu("Colors", colorMenuId);
+	glutAddSubMenu("Fonts", fontMenuId);
+	glutAddMenuEntry("Exit", EXIT);
+}
+
 void infoDisplayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT);	// draw the background
@@ -129,7 +192,7 @@ void infoDisplayCallback()
 
 void infoMenuCallback(int entryId) {
 	switch (entryId) {
-	case 1:
+	case MINIMIZE:
 		glutIconifyWindow();
 	}
 }
@@ -152,11 +215,12 @@ int main()
 
 	editorWindow.setUp("Editor Window", 100, 100);
     glutDisplayFunc(editorDisplayCallback);		// register a callback
+	createEditorMenus();
 	infoWindow.setUp("Info Window", 1000, 100);
 	glutDisplayFunc(infoDisplayCallback);
 	glutCreateMenu(infoMenuCallback);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	glutAddMenuEntry("Minimize", 1);
+	glutAddMenuEntry("Minimize", MINIMIZE);
 
 
     glutMainLoop();							// get into an infinite loop
