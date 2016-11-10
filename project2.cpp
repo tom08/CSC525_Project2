@@ -83,6 +83,7 @@ public:
 	int getWindowId();
 	int getTextX();
 	int getTextY();
+	void setLineWidth(int width);
 	int getLineWidth();
 	bool hasText();
 	void resetTextPos();
@@ -103,7 +104,7 @@ private:
 	int topWorldY;
 	int lowerWorldY;
     const int line_height = 25;
-	const int line_width = 60;
+	int line_width;
 	float color[3];
 	void* font;
 	std::vector<char> displayedText;
@@ -122,6 +123,7 @@ Window::Window(int width, int height) {
 	this->defaultX = this->textX;
 	this->defaultY = this->textY;
 	this->font = GLUT_BITMAP_8_BY_13;
+	line_width = 60;
 }
 
 void Window::setUp(const char title[], int startX, int startY) {
@@ -177,6 +179,7 @@ float Window::blue(){ return this->color[2]; }
 int Window::getWindowId(){ return this->id;}
 int Window::getTextX(){ return this->textX; }
 int Window::getTextY(){ return this->textY; }
+void Window::setLineWidth(int width) { this->line_width = width; }
 int Window::getLineWidth() { return this->line_width; }
 void Window::resetTextPos(){
     this->textX = this->defaultX;
@@ -200,8 +203,8 @@ void Window::removeLastChar() { displayedText.pop_back(); }
 // Window dimentions
 const int editWindowX = 680;
 const int editWindowY = 800;
-const int infoWindowX = 500;
-const int infoWindowY = 400;
+const int infoWindowX = 700;
+const int infoWindowY = 600;
 Window editorWindow(editWindowX, editWindowY);
 Window infoWindow(infoWindowX, infoWindowY);
 
@@ -230,6 +233,52 @@ void display_text(){
         chars++;
     }
     editorWindow.resetTextPos();
+}
+
+
+void display_info() {
+	glColor3f(infoWindow.red(), infoWindow.green(), infoWindow.blue());
+	glRasterPos2i(infoWindow.getTextX(), infoWindow.getTextY());
+	std::vector<char> text = infoWindow.getText();
+	infoWindow.setLineWidth(84);
+	int chars = 0;
+	for (int i = 0; i < text.size(); i++) {
+		if (text.at(i) == '\n') {
+			chars = 0;
+			infoWindow.textNextLine();
+			glRasterPos2i(infoWindow.getTextX(), infoWindow.getTextY());
+			continue;
+		}
+		if (chars == infoWindow.getLineWidth()) {
+			chars = 0;
+			infoWindow.textNextLine();
+			glRasterPos2i(infoWindow.getTextX(), infoWindow.getTextY());
+		}
+		glutBitmapCharacter(infoWindow.getFont(), text.at(i));
+		chars++;
+	}
+	infoWindow.resetTextPos();
+}
+
+void add_info_to_screen() {
+	std::string info =
+		"To Minimize this screen: right click -> Minimize \n Capabilities of the Program: \n"
+		"-You can type in the Editor Window\n"
+		"----Left Click where you want to enter text and start typing.\n"
+		"----The max line length is 60 characters. If it overflows the text continues on the next line.\n"
+		"-You can change the color of the text\n"
+		"----Right click to open the menu, click on 'Colors' and select the color you want\n"
+		"-You can change the font of the text\n"
+		"----Right click to open the menu, click on 'Fonts' and select the font you want\n"
+		"-You can save the text entered to a file\n"
+		"----Right click to open the menu, click on 'Save Displayed Text'.\n"
+		"----The file is saved in C:\\Temp as typed.txt.\n"
+		"-You can exit the program\n"
+		"----Right click to open the menu, click on 'Exit'.";
+	for (int i = 0; i < info.length(); i++) {
+		infoWindow.addChar(info[i]);
+	}
+	display_info();
 }
 
 
@@ -296,13 +345,14 @@ void createEditorMenus() {
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutAddSubMenu("Colors", colorMenuId);
 	glutAddSubMenu("Fonts", fontMenuId);
-	glutAddMenuEntry("Save Display Text", SAVE);
+	glutAddMenuEntry("Save Displayed Text", SAVE);
 	glutAddMenuEntry("Exit", EXIT);
 }
 
 void infoDisplayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT);	// draw the background
+	add_info_to_screen();
 	glFlush(); // flush out the buffer contents
 }
 
