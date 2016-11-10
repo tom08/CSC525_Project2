@@ -151,8 +151,10 @@ void Window::save() {
 				fout << '\n';
 			}
 			else {
-				if (displayedText.at(i) == ENTER)
+				if (displayedText.at(i) == ENTER) {
+					fout << '\n';
 					chars = 0;
+				}
 				else {
 					chars++;
 				}
@@ -163,6 +165,7 @@ void Window::save() {
 	}
 	else {
 		std::cout << "Failed to open C:\\TEMP\\typed.txt" << std::endl;
+		exit(0);
 	}
 }
 
