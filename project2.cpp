@@ -139,7 +139,7 @@ void Window::save() {
 	std::ofstream fout;
 	std::string filename = "typed.txt";
 #ifdef _WIN32
-	filename = "C:\\TEMP\\typed.txt";
+	filename = "C:\\TEMP\typed.txt";
 #endif
 	fout.open(filename);
 	if (fout.is_open()) {
@@ -164,7 +164,8 @@ void Window::save() {
 		fout.close();
 	}
 	else {
-		std::cout << "Failed to open C:\\TEMP\\typed.txt" << std::endl;
+		std::cout << "Failed to open C:\\TEMP\\typed.txt. Press enter to exit." << std::endl;
+		getchar();
 		exit(0);
 	}
 }
