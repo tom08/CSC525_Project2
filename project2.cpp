@@ -3,11 +3,31 @@
  TRACE:                 kroll001, Kroll1483
  COURSE:				CSC 525/625
  MODIFIED BY:			Thomas Kroll:kroll001, Nathan Kroll:Kroll1483
- LAST MODIFIED DATE:	10/30/2016
- DESCRIPTION:			
- TASKS COMPLETED BY:    Thomas Kroll, kroll001:
+ LAST MODIFIED DATE:	11/02/2016
+ TASKS COMPLETED BY:    Thomas Kroll, kroll001: 50%
+                            -User can type text into the text editor window (line length 60 chars)
+                            -When the line is full, the text automatically wraps to the next line
+                            -User can type ENTER to go to the next line
+                            -User can type BACKSPACE to remove the last character
+                            -User can select starting position of text
                         
-                        Nathan Kroll, Kroll1483:
+                        Nathan Kroll, Kroll1483: 50%
+                            -User can minimize the help window
+                            -Help window displays detailed instructions
+                            -User can select the Font of the text in the editor window
+                            -User can select the color of the text in the editor window
+                            -User can save the text in the editor window to a txt file
+                            -User can terminate the program through the menu
+ DESCRIPTION:           This program opens two windows on launch.  One is a help window that
+                        describes how to operate the second window, which is the text editor
+                        window.  In the text editor, left clicking before typing will choose
+                        the starting location for the text.  Right clicking will open a menu
+                        that lets you choose the font type, and the text color.  The menu
+                        also gives you the option to save to a text file or exit the program.
+                        This program auto-wraps a line of text at 60 characters.  Also while
+                        typing, you may hit enter at any time to move to the next line, or hit
+                        backspace at any time to remove the last character (and then the next
+                        to last character and so on).
 
  NOTE:					N/A
  FILES:					project2.cpp, (projProject.sln, ...)
@@ -29,9 +49,6 @@
 #include <vector>
 #include <GL/glut.h>				// include GLUT library
 
-#ifdef _WIN32
-#else
-#endif
 
 //***********************************************************************************
 //GLOBALS
