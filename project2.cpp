@@ -157,8 +157,8 @@ void Window::save() {
 				}
 				else {
 					chars++;
+                    fout << displayedText.at(i);
 				}
-				fout << displayedText.at(i);
 			}
 		}
 		fout.close();
