@@ -94,6 +94,7 @@ public:
     std::vector<char> getText();
 	void setUp(const char title[], int startX, int startY);
 	void save();
+	void clearText();
 private:
 	int id;
 	int width;
@@ -135,11 +136,13 @@ void Window::setUp(const char title[], int startX, int startY) {
 	glRasterPos2i(leftWorldX, rightWorldX);
 }
 
+void Window::clearText(){ displayedText.clear(); }
+
 void Window::save() {
 	std::ofstream fout;
 	std::string filename = "typed.txt";
 #ifdef _WIN32
-	filename = "C:\\TEMP\typed.txt";
+	filename = "C:\\TEMP\\typed.txt";
 #endif
 	fout.open(filename);
 	if (fout.is_open()) {
@@ -283,6 +286,7 @@ void add_info_to_screen() {
 		infoWindow.addChar(info[i]);
 	}
 	display_info();
+	infoWindow.clearText();
 }
 
 
